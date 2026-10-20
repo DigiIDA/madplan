@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../domain/models.dart';
 import '../state/app_state.dart';
+import 'backup_menu.dart';
 import 'recipe_edit_screen.dart';
 import 'theme.dart';
 import 'widgets.dart';
@@ -27,7 +28,10 @@ class RecipesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Opskrifter')),
+    appBar: AppBar(
+      title: const Text('Opskrifter'),
+      actions: [BackupMenu(state: state)],
+    ),
     floatingActionButton: FloatingActionButton.extended(
       onPressed: () => _openEditor(context, null),
       icon: const Icon(Icons.add),

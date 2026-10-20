@@ -108,6 +108,16 @@ class AppState extends ChangeNotifier {
     _commit();
   }
 
+  int importRecipes(List<Recipe> incoming) {
+    final incomingIds = {for (final recipe in incoming) recipe.id};
+    _recipes = [
+      ..._recipes.where((recipe) => !incomingIds.contains(recipe.id)),
+      ...incoming,
+    ];
+    _commit();
+    return incoming.length;
+  }
+
   void deleteRecipe(String id) {
     _recipes = [..._recipes.where((recipe) => recipe.id != id)];
     _plan = [..._plan.where((entry) => entry.recipeId != id)];

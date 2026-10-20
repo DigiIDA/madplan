@@ -6,6 +6,7 @@ En enkel Android-app til opskrifter, madplan og indkøb. Alt gemmes lokalt på t
 - **Madplan**: læg en ret på for hver dag og vælg antal personer – mængderne skaleres automatisk. Appen viser, hvad der er **til overs**, og foreslår retter til resterne.
 - **Køleskab**: skriv, hvad du har derhjemme. Appen foreslår retter og viser, hvad du skal **supplere med**.
 - **Indkøb**: indkøbslisten laves ud fra madplanen minus det, du har. Angiv en pakningsstørrelse (fx `2,5 dl`), så runder listen op til hele pakker, og overskuddet tæller med i resterne. Kryds varer af, når du har købt dem, og tryk **Læg i køleskabet**.
+- **Backup**: menuen (⋮) på Opskrifter → **Gem backup** gemmer alle opskrifter som en JSON-fil (fx i Overførsler eller Google Drev). **Hent backup** fletter dem ind igen – opskrifter med samme id erstattes, så der ikke kommer dubletter.
 
 ## Installation via Obtainium
 

@@ -100,6 +100,26 @@ void main() {
     expect(state.plannedMeals.single.servings, defaultServings);
   });
 
+  test('importing replaces matching ids and adds new recipes', () async {
+    const pancakes = Recipe(
+      id: 'pancakes',
+      name: 'Pandekager',
+      ingredients: [],
+    );
+    const renamed = Recipe(
+      id: 'omelet',
+      name: 'Omelet deluxe',
+      ingredients: [],
+    );
+    final state = AppState.load(await freshPrefs())..saveRecipe(omelet);
+
+    expect(state.importRecipes([renamed, pancakes]), 2);
+    expect(state.recipes.map((recipe) => recipe.name), [
+      'Omelet deluxe',
+      'Pandekager',
+    ]);
+  });
+
   test('deleting a recipe removes it from the plan', () async {
     final state = AppState.load(await freshPrefs())
       ..saveRecipe(omelet)
