@@ -30,6 +30,18 @@ void main() {
     expect(items.single.missing, 300);
   });
 
+  test('scaledTo adjusts every ingredient to the number of people', () {
+    final soup = Recipe(
+      id: 'soup',
+      name: 'Suppe',
+      ingredients: parseIngredients('1 kg gulerødder\n2 løg'),
+      servings: 4,
+    );
+    final scaled = toStock(soup.scaledTo(6));
+    expect(scaled[ItemKey('gulerod', Dimension.mass)], 1500);
+    expect(scaled[ItemKey('løg', Dimension.count)], 3);
+  });
+
   test('subtract keeps only positive remainders', () {
     final result = subtract(stock('3 æg\n100 g pasta'), stock('3 æg'));
     expect(result.keys, [pasta]);
@@ -60,6 +72,15 @@ void main() {
       expect(creamItem.toBuy, 500);
       final eggItem = items.firstWhere((item) => item.key == eggs);
       expect(eggItem.packs, 1);
+    });
+
+    test('rounds pieces up to whole items without a pack size', () {
+      final items = shoppingList(
+        needs: stock('1,5 æg\n150 g pasta'),
+        pantry: const {},
+        packSizes: const {},
+      );
+      expect(items.map((item) => item.toBuy), [150, 2]);
     });
 
     test('does not add a pack on exact multiples', () {

@@ -12,7 +12,7 @@ String describe(ShoppingItem item) {
   final size = item.packSize;
   final missing = formatBase(item.missing, dimension);
   return size == null
-      ? 'Køb $missing'
+      ? 'Køb ${formatBase(item.toBuy, dimension)}'
       : 'Køb ${item.packs} pk à ${formatBase(size, dimension)} '
             '(skal bruge $missing)';
 }

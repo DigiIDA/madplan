@@ -2,8 +2,8 @@
 
 En enkel Android-app til opskrifter, madplan og indkøb. Alt gemmes lokalt på telefonen.
 
-- **Opskrifter**: skriv ingredienser som `100 g gulerødder`, `2 dl mælk`, `3 æg` (én pr. linje).
-- **Madplan**: læg en ret på for hver dag. Appen viser, hvad der er **til overs**, og foreslår retter til resterne.
+- **Opskrifter**: skriv ingredienser som `100 g gulerødder`, `2 dl mælk`, `3 æg` (én pr. linje), og hvor mange personer opskriften er til.
+- **Madplan**: læg en ret på for hver dag og vælg antal personer – mængderne skaleres automatisk. Appen viser, hvad der er **til overs**, og foreslår retter til resterne.
 - **Køleskab**: skriv, hvad du har derhjemme. Appen foreslår retter og viser, hvad du skal **supplere med**.
 - **Indkøb**: indkøbslisten laves ud fra madplanen minus det, du har. Angiv en pakningsstørrelse (fx `2,5 dl`), så runder listen op til hele pakker, og overskuddet tæller med i resterne. Kryds varer af, når du har købt dem, og tryk **Læg i køleskabet**.
 

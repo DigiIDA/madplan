@@ -55,4 +55,34 @@ void main() {
     expect(find.text('Du har alt, hvad madplanen kræver.'), findsOneWidget);
     expect(state.pantry.single.name, 'pasta');
   });
+
+  testWidgets('servings stepper on the plan scales the shopping list', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final state = AppState.load(prefs)
+      ..saveRecipe(
+        Recipe(
+          id: 'pasta',
+          name: 'Pasta',
+          ingredients: parseIngredients('400 g pasta'),
+        ),
+      )
+      ..addToPlan('pasta');
+    await tester.pumpWidget(MadplanApp(state: state));
+
+    await tester.tap(find.widgetWithText(NavigationDestination, 'Madplan'));
+    await tester.pumpAndSettle();
+    expect(find.text('4 pers.'), findsOneWidget);
+    for (var tap = 0; tap < 2; tap++) {
+      await tester.tap(find.byTooltip('Færre personer'));
+      await tester.pumpAndSettle();
+    }
+    expect(find.text('2 pers.'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(NavigationDestination, 'Indkøb'));
+    await tester.pumpAndSettle();
+    expect(find.text('Køb 200 g'), findsOneWidget);
+  });
 }

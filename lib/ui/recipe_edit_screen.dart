@@ -5,6 +5,7 @@ import '../domain/models.dart';
 import '../domain/parse.dart';
 import '../state/app_state.dart';
 import 'theme.dart';
+import 'widgets.dart';
 
 const _ingredientLines = 6;
 const _instructionLines = 4;
@@ -27,6 +28,7 @@ class _RecipeEditScreenState extends State<RecipeEditScreen> {
   late final _instructions = TextEditingController(
     text: widget.recipe?.instructions,
   );
+  late var _servings = widget.recipe?.servings ?? defaultServings;
 
   @override
   void dispose() {
@@ -53,6 +55,7 @@ class _RecipeEditScreenState extends State<RecipeEditScreen> {
         name: name,
         ingredients: ingredients,
         instructions: _instructions.text.trim(),
+        servings: _servings,
       ),
     );
     Navigator.of(context).pop();
@@ -105,7 +108,17 @@ class _RecipeEditScreenState extends State<RecipeEditScreen> {
             textCapitalization: TextCapitalization.sentences,
             decoration: const InputDecoration(labelText: 'Navn på retten'),
           ),
-          const SizedBox(height: Spacing.m),
+          const SizedBox(height: Spacing.s),
+          Row(
+            children: [
+              const Expanded(child: Text('Opskriften er til')),
+              ServingsStepper(
+                value: _servings,
+                onChanged: (value) => setState(() => _servings = value),
+              ),
+            ],
+          ),
+          const SizedBox(height: Spacing.s),
           TextField(
             controller: _ingredients,
             minLines: _ingredientLines,

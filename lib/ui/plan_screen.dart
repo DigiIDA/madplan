@@ -96,7 +96,7 @@ class _PlanBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final plan = state.planRecipes;
+    final plan = state.plannedMeals;
     final leftovers = state.leftovers;
     final suggestions = suggestRecipes(leftovers, state.recipes);
 
@@ -108,7 +108,7 @@ class _PlanBody extends StatelessWidget {
         Spacing.fabClearance,
       ),
       children: [
-        for (final (index, recipe) in plan.indexed)
+        for (final (index, (:recipe, :servings)) in plan.indexed)
           Card(
             child: ListTile(
               leading: CircleAvatar(
@@ -120,7 +120,15 @@ class _PlanBody extends StatelessWidget {
                 recipe.name,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              subtitle: Text('Dag ${index + 1}'),
+              subtitle: Row(
+                children: [
+                  Expanded(child: Text('Dag ${index + 1}')),
+                  ServingsStepper(
+                    value: servings,
+                    onChanged: (value) => state.setServings(index, value),
+                  ),
+                ],
+              ),
               trailing: IconButton(
                 tooltip: 'Fjern fra madplan',
                 icon: const Icon(Icons.close),

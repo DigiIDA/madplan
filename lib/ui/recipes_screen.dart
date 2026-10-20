@@ -60,7 +60,10 @@ class RecipesScreen extends StatelessWidget {
                   recipe.name,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                subtitle: Text('${recipe.ingredients.length} ingredienser'),
+                subtitle: Text(
+                  '${recipe.ingredients.length} ingredienser · '
+                  '${recipe.servings} pers.',
+                ),
                 onTap: () => _openEditor(context, recipe),
                 trailing: IconButton(
                   tooltip: 'Læg på madplan',

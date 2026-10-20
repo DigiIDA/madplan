@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../domain/format.dart';
+import '../domain/models.dart';
 import '../domain/planning.dart';
 import 'theme.dart';
 
@@ -97,4 +98,35 @@ class SuggestionCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class ServingsStepper extends StatelessWidget {
+  const ServingsStepper({
+    super.key,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final int value;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      IconButton(
+        tooltip: 'Færre personer',
+        visualDensity: VisualDensity.compact,
+        icon: const Icon(Icons.remove_circle_outline),
+        onPressed: value > minServings ? () => onChanged(value - 1) : null,
+      ),
+      Text('$value pers.'),
+      IconButton(
+        tooltip: 'Flere personer',
+        visualDensity: VisualDensity.compact,
+        icon: const Icon(Icons.add_circle_outline, color: Palette.teal),
+        onPressed: () => onChanged(value + 1),
+      ),
+    ],
+  );
 }

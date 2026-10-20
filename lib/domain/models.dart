@@ -1,6 +1,9 @@
 import 'names.dart';
 import 'quantity.dart';
 
+const defaultServings = 4;
+const minServings = 1;
+
 final class ItemKey {
   ItemKey(this.name, this.dimension) : match = matchKey(name);
 
@@ -52,6 +55,9 @@ class Ingredient {
 
   double get baseAmount => amount * unit.baseFactor;
 
+  Ingredient scaled(double factor) =>
+      Ingredient(name: name, amount: amount * factor, unit: unit);
+
   Map<String, Object> toJson() => {
     'name': name,
     'amount': amount,
@@ -65,6 +71,7 @@ class Recipe {
     required this.name,
     required this.ingredients,
     this.instructions = '',
+    this.servings = defaultServings,
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
@@ -75,17 +82,51 @@ class Recipe {
         Ingredient.fromJson(item as Map<String, dynamic>),
     ],
     instructions: json['instructions'] as String? ?? '',
+    servings: json['servings'] as int? ?? defaultServings,
   );
 
   final String id;
   final String name;
   final List<Ingredient> ingredients;
   final String instructions;
+  final int servings;
+
+  List<Ingredient> scaledTo(int people) => [
+    for (final item in ingredients) item.scaled(people / servings),
+  ];
 
   Map<String, Object> toJson() => {
     'id': id,
     'name': name,
     'ingredients': [for (final item in ingredients) item.toJson()],
     'instructions': instructions,
+    'servings': servings,
   };
 }
+
+class PlanEntry {
+  const PlanEntry({required this.recipeId, required this.servings});
+
+  factory PlanEntry.fromJson(Object json, Map<String, Recipe> recipes) =>
+      switch (json) {
+        final String id => PlanEntry(
+          recipeId: id,
+          servings: recipes[id]?.servings ?? defaultServings,
+        ),
+        final Map<String, dynamic> map => PlanEntry(
+          recipeId: map['recipeId'] as String,
+          servings: map['servings'] as int,
+        ),
+        _ => throw FormatException('Ukendt madplan-format: $json'),
+      };
+
+  final String recipeId;
+  final int servings;
+
+  PlanEntry withServings(int value) =>
+      PlanEntry(recipeId: recipeId, servings: value);
+
+  Map<String, Object> toJson() => {'recipeId': recipeId, 'servings': servings};
+}
+
+typedef PlannedMeal = ({Recipe recipe, int servings});

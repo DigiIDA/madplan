@@ -1,6 +1,8 @@
 import 'models.dart';
+import 'quantity.dart';
 
 const _epsilon = 1e-9;
+const _wholePiece = 1.0;
 
 Stock toStock(Iterable<Ingredient> ingredients) {
   final stock = <ItemKey, double>{};
@@ -42,7 +44,8 @@ class ShoppingItem {
   }
 
   double get toBuy {
-    final size = packSize;
+    final size =
+        packSize ?? (key.dimension == Dimension.count ? _wholePiece : null);
     return size == null ? missing : (missing / size - _epsilon).ceil() * size;
   }
 }

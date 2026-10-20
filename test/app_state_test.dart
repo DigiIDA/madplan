@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:madplan/domain/format.dart';
 import 'package:madplan/domain/models.dart';
@@ -62,6 +64,40 @@ void main() {
 
     expect(state.pantry.map(formatIngredient), ['3 æg']);
     expect(state.shopping.single.key.name, 'mælk');
+  });
+
+  test('plan days start at the recipe servings and scale needs', () async {
+    final eggs = ItemKey('æg', Dimension.count);
+    final state = AppState.load(await freshPrefs())
+      ..saveRecipe(omelet)
+      ..addToPlan(omelet.id);
+    expect(state.plannedMeals.single.servings, defaultServings);
+    expect(state.needs[eggs], 3);
+
+    state.setServings(0, 2);
+    expect(state.needs[eggs], 1.5);
+    state.setServings(0, 0);
+    expect(state.plannedMeals.single.servings, 2);
+  });
+
+  test('loads data saved before servings existed', () async {
+    SharedPreferences.setMockInitialValues({
+      'madplan_state_v1': jsonEncode({
+        'recipes': [
+          {
+            'id': 'omelet',
+            'name': 'Omelet',
+            'ingredients': [
+              {'name': 'æg', 'amount': 3, 'unit': 'stk'},
+            ],
+          },
+        ],
+        'plan': ['omelet'],
+      }),
+    });
+    final state = AppState.load(await SharedPreferences.getInstance());
+    expect(state.recipes.single.servings, defaultServings);
+    expect(state.plannedMeals.single.servings, defaultServings);
   });
 
   test('deleting a recipe removes it from the plan', () async {

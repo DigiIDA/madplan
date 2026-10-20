@@ -22,7 +22,7 @@ class AppState extends ChangeNotifier {
     this._prefs, {
     List<Recipe> recipes = const [],
     List<Ingredient> pantry = const [],
-    List<String> plan = const [],
+    List<PlanEntry> plan = const [],
     List<Ingredient> packSizes = const [],
     Set<String> checked = const {},
   }) : _recipes = recipes,
@@ -35,11 +35,16 @@ class AppState extends ChangeNotifier {
     final raw = prefs.getString(_storageKey);
     if (raw == null) return AppState._(prefs);
     final json = jsonDecode(raw) as Map<String, dynamic>;
+    final recipes = _decodeList(json['recipes'], Recipe.fromJson);
+    final byId = {for (final recipe in recipes) recipe.id: recipe};
     return AppState._(
       prefs,
-      recipes: _decodeList(json['recipes'], Recipe.fromJson),
+      recipes: recipes,
       pantry: _decodeList(json['pantry'], Ingredient.fromJson),
-      plan: [for (final id in json['plan'] as List? ?? const []) id as String],
+      plan: [
+        for (final entry in json['plan'] as List? ?? const [])
+          PlanEntry.fromJson(entry as Object, byId),
+      ],
       packSizes: _decodeList(json['packSizes'], Ingredient.fromJson),
       checked: {
         for (final key in json['checked'] as List? ?? const []) key as String,
@@ -50,20 +55,29 @@ class AppState extends ChangeNotifier {
   final SharedPreferences _prefs;
   List<Recipe> _recipes;
   List<Ingredient> _pantry;
-  List<String> _plan;
+  List<PlanEntry> _plan;
   List<Ingredient> _packSizes;
   Set<String> _checked;
 
   List<Recipe> get recipes => List.unmodifiable(_recipes);
   List<Ingredient> get pantry => List.unmodifiable(_pantry);
 
-  List<Recipe> get planRecipes {
+  List<PlannedMeal> get plannedMeals {
     final byId = {for (final recipe in _recipes) recipe.id: recipe};
-    return [for (final id in _plan) ?byId[id]];
+    return [
+      for (final entry in _plan)
+        if (byId[entry.recipeId] case final recipe?)
+          (recipe: recipe, servings: entry.servings),
+    ];
   }
 
-  Stock get needs =>
-      toStock(planRecipes.expand((recipe) => recipe.ingredients));
+  List<Recipe> get planRecipes => [
+    for (final meal in plannedMeals) meal.recipe,
+  ];
+
+  Stock get needs => toStock(
+    plannedMeals.expand((meal) => meal.recipe.scaledTo(meal.servings)),
+  );
 
   Stock get packSizes => {
     for (final pack in _packSizes) pack.key: pack.baseAmount,
@@ -96,7 +110,7 @@ class AppState extends ChangeNotifier {
 
   void deleteRecipe(String id) {
     _recipes = [..._recipes.where((recipe) => recipe.id != id)];
-    _plan = [..._plan.where((planned) => planned != id)];
+    _plan = [..._plan.where((entry) => entry.recipeId != id)];
     _commit();
   }
 
@@ -126,7 +140,17 @@ class AppState extends ChangeNotifier {
   }
 
   void addToPlan(String recipeId) {
-    _plan = [..._plan, recipeId];
+    final recipe = _recipes.firstWhere((recipe) => recipe.id == recipeId);
+    _plan = [
+      ..._plan,
+      PlanEntry(recipeId: recipeId, servings: recipe.servings),
+    ];
+    _commit();
+  }
+
+  void setServings(int index, int servings) {
+    if (servings < minServings) return;
+    _plan = [..._plan]..[index] = _plan[index].withServings(servings);
     _commit();
   }
 
@@ -160,7 +184,7 @@ class AppState extends ChangeNotifier {
   Map<String, Object> _toJson() => {
     'recipes': [for (final recipe in _recipes) recipe.toJson()],
     'pantry': [for (final item in _pantry) item.toJson()],
-    'plan': _plan,
+    'plan': [for (final entry in _plan) entry.toJson()],
     'packSizes': [for (final pack in _packSizes) pack.toJson()],
     'checked': _checked.toList(),
   };
