@@ -26,6 +26,15 @@ enum Unit {
     'spiseske': Unit.spsk,
   };
 
+  static Unit readable(double base, Dimension dimension) => switch (dimension) {
+    Dimension.mass when base >= Unit.kg.baseFactor => Unit.kg,
+    Dimension.mass => Unit.g,
+    Dimension.volume when base >= Unit.l.baseFactor => Unit.l,
+    Dimension.volume when base >= Unit.dl.baseFactor => Unit.dl,
+    Dimension.volume => Unit.ml,
+    Dimension.count => Unit.stk,
+  };
+
   static Unit? tryParse(String text) {
     final word = text.toLowerCase().replaceAll('.', '');
     for (final unit in Unit.values) {

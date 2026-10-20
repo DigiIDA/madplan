@@ -110,6 +110,21 @@ class AppState extends ChangeNotifier {
     _commit();
   }
 
+  int get checkedCount => shopping.where((item) => isChecked(item.key)).length;
+
+  void moveCheckedToPantry() {
+    final bought = purchased(shopping.where((item) => isChecked(item.key)));
+    if (bought.isEmpty) return;
+    final current = toStock(_pantry);
+    _pantry = [
+      ..._pantry.where((item) => !bought.containsKey(item.key)),
+      for (final MapEntry(:key, :value) in bought.entries)
+        Ingredient.fromBase(key, value + (current[key] ?? 0)),
+    ];
+    _checked = {..._checked}..removeAll(bought.keys.map((key) => key.id));
+    _commit();
+  }
+
   void addToPlan(String recipeId) {
     _plan = [..._plan, recipeId];
     _commit();

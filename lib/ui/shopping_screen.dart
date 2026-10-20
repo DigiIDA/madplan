@@ -28,59 +28,88 @@ class ShoppingScreen extends StatelessWidget {
         builder: (_) => _PackSizeDialog(state: state, item: item),
       );
 
+  void _moveToPantry(BuildContext context, int count) {
+    state.moveCheckedToPantry();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          count == 1
+              ? '1 vare er lagt i køleskabet'
+              : '$count varer er lagt i køleskabet',
+        ),
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Indkøb')),
-    body: ListenableBuilder(
-      listenable: state,
-      builder: (context, _) {
-        if (state.planRecipes.isEmpty) {
-          return const EmptyHint(
-            'Læg retter på madplanen, så laver jeg indkøbslisten.',
-          );
-        }
-        final items = state.shopping;
-        if (items.isEmpty) {
-          return const EmptyHint('Du har alt, hvad madplanen kræver.');
-        }
-        return ListView(
-          padding: const EdgeInsets.all(Spacing.m),
-          children: [
-            Text(
-              'Tryk på pakken for at angive pakningsstørrelse.',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            const SizedBox(height: Spacing.s),
-            for (final item in items)
-              Card(
-                child: CheckboxListTile(
-                  controlAffinity: ListTileControlAffinity.leading,
-                  value: state.isChecked(item.key),
-                  onChanged: (_) => state.toggleChecked(item.key),
-                  title: Text(
-                    item.key.name,
-                    style: state.isChecked(item.key)
-                        ? const TextStyle(
-                            decoration: TextDecoration.lineThrough,
-                          )
-                        : null,
-                  ),
-                  subtitle: Text(describe(item)),
-                  secondary: IconButton(
-                    tooltip: 'Pakningsstørrelse',
-                    icon: const Icon(
-                      Icons.inventory_2_outlined,
-                      color: Palette.burntOrange,
-                    ),
-                    onPressed: () => _editPackSize(context, item),
-                  ),
-                ),
+  Widget build(BuildContext context) => ListenableBuilder(
+    listenable: state,
+    builder: (context, _) {
+      final checked = state.checkedCount;
+      return Scaffold(
+        appBar: AppBar(title: const Text('Indkøb')),
+        floatingActionButton: checked == 0
+            ? null
+            : FloatingActionButton.extended(
+                onPressed: () => _moveToPantry(context, checked),
+                icon: const Icon(Icons.kitchen),
+                label: Text('Læg $checked i køleskabet'),
               ),
-          ],
-        );
-      },
-    ),
+        body: _buildList(context),
+      );
+    },
   );
+
+  Widget _buildList(BuildContext context) {
+    if (state.planRecipes.isEmpty) {
+      return const EmptyHint(
+        'Læg retter på madplanen, så laver jeg indkøbslisten.',
+      );
+    }
+    final items = state.shopping;
+    if (items.isEmpty) {
+      return const EmptyHint('Du har alt, hvad madplanen kræver.');
+    }
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(
+        Spacing.m,
+        Spacing.m,
+        Spacing.m,
+        Spacing.fabClearance,
+      ),
+      children: [
+        Text(
+          'Kryds af, når du har købt en vare, og læg den i køleskabet. '
+          'Tryk på pakken for at angive pakningsstørrelse.',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        const SizedBox(height: Spacing.s),
+        for (final item in items)
+          Card(
+            child: CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.leading,
+              value: state.isChecked(item.key),
+              onChanged: (_) => state.toggleChecked(item.key),
+              title: Text(
+                item.key.name,
+                style: state.isChecked(item.key)
+                    ? const TextStyle(decoration: TextDecoration.lineThrough)
+                    : null,
+              ),
+              subtitle: Text(describe(item)),
+              secondary: IconButton(
+                tooltip: 'Pakningsstørrelse',
+                icon: const Icon(
+                  Icons.inventory_2_outlined,
+                  color: Palette.burntOrange,
+                ),
+                onPressed: () => _editPackSize(context, item),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
 }
 
 class _PackSizeDialog extends StatefulWidget {

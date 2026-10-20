@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:madplan/domain/format.dart';
 import 'package:madplan/domain/models.dart';
 import 'package:madplan/domain/parse.dart';
 import 'package:madplan/domain/quantity.dart';
@@ -33,6 +34,34 @@ void main() {
     expect(reloaded.pantry.single.name, 'æg');
     expect(reloaded.shopping.map((item) => item.key.name), ['mælk', 'æg']);
     expect(reloaded.leftovers[ItemKey('mælk', Dimension.volume)], 900);
+  });
+
+  test('moving checked purchases into the pantry merges and clears', () async {
+    final eggs = ItemKey('æg', Dimension.count);
+    final milk = ItemKey('mælk', Dimension.volume);
+    final state = AppState.load(await freshPrefs())
+      ..saveRecipe(omelet)
+      ..addToPlan(omelet.id)
+      ..addPantry(parseIngredient('2 æggene')!)
+      ..setPackSize(milk, parseIngredient('1 l mælk'))
+      ..toggleChecked(eggs)
+      ..toggleChecked(milk)
+      ..moveCheckedToPantry();
+
+    expect(state.pantry.map(formatIngredient), ['1 l mælk', '3 æg']);
+    expect(state.shopping, isEmpty);
+    expect(state.isChecked(eggs), isFalse);
+  });
+
+  test('moving leaves unchecked items on the list', () async {
+    final state = AppState.load(await freshPrefs())
+      ..saveRecipe(omelet)
+      ..addToPlan(omelet.id)
+      ..toggleChecked(ItemKey('æg', Dimension.count))
+      ..moveCheckedToPantry();
+
+    expect(state.pantry.map(formatIngredient), ['3 æg']);
+    expect(state.shopping.single.key.name, 'mælk');
   });
 
   test('deleting a recipe removes it from the plan', () async {

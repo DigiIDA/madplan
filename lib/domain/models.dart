@@ -35,6 +35,15 @@ class Ingredient {
     unit: Unit.values.byName(json['unit'] as String),
   );
 
+  factory Ingredient.fromBase(ItemKey key, double base) {
+    final unit = Unit.readable(base, key.dimension);
+    return Ingredient(
+      name: key.name,
+      amount: base / unit.baseFactor,
+      unit: unit,
+    );
+  }
+
   final String name;
   final double amount;
   final Unit unit;
