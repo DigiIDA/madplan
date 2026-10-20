@@ -44,10 +44,6 @@ List<Ingredient> parseIngredients(String text) =>
 
 Ingredient? parsePackSize(String text, ItemKey key) {
   final pack = parseIngredient('$text ${key.name}');
-  final matches =
-      pack != null &&
-      pack.name == key.name &&
-      pack.unit.dimension == key.dimension &&
-      pack.amount > 0;
+  final matches = pack != null && pack.key == key && pack.amount > 0;
   return matches ? pack : null;
 }

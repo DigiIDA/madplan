@@ -1,6 +1,22 @@
+import 'names.dart';
 import 'quantity.dart';
 
-typedef ItemKey = ({String name, Dimension dimension});
+final class ItemKey {
+  ItemKey(this.name, this.dimension) : match = matchKey(name);
+
+  final String name;
+  final Dimension dimension;
+  final String match;
+
+  String get id => '$match|${dimension.name}';
+
+  @override
+  bool operator ==(Object other) =>
+      other is ItemKey && other.match == match && other.dimension == dimension;
+
+  @override
+  int get hashCode => Object.hash(match, dimension);
+}
 
 typedef Stock = Map<ItemKey, double>;
 
@@ -23,7 +39,7 @@ class Ingredient {
   final double amount;
   final Unit unit;
 
-  ItemKey get key => (name: name, dimension: unit.dimension);
+  ItemKey get key => ItemKey(name, unit.dimension);
 
   double get baseAmount => amount * unit.baseFactor;
 

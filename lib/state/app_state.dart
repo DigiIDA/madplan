@@ -9,8 +9,6 @@ import '../domain/planning.dart';
 
 const _storageKey = 'madplan_state_v1';
 
-String _checkKey(ItemKey key) => '${key.name}|${key.dimension.name}';
-
 List<T> _decodeList<T>(
   Object? raw,
   T Function(Map<String, dynamic>) fromJson,
@@ -83,7 +81,7 @@ class AppState extends ChangeNotifier {
     shopping: shopping,
   );
 
-  bool isChecked(ItemKey key) => _checked.contains(_checkKey(key));
+  bool isChecked(ItemKey key) => _checked.contains(key.id);
 
   void saveRecipe(Recipe recipe) {
     final exists = _recipes.any((existing) => existing.id == recipe.id);
@@ -137,7 +135,7 @@ class AppState extends ChangeNotifier {
   }
 
   void toggleChecked(ItemKey key) {
-    final id = _checkKey(key);
+    final id = key.id;
     _checked = _checked.contains(id)
         ? ({..._checked}..remove(id))
         : {..._checked, id};

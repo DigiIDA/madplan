@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:madplan/domain/models.dart';
 import 'package:madplan/domain/parse.dart';
 import 'package:madplan/domain/quantity.dart';
 
@@ -48,8 +49,8 @@ void main() {
   });
 
   group('parsePackSize', () {
-    const cream = (name: 'fløde', dimension: Dimension.volume);
-    const eggs = (name: 'æg', dimension: Dimension.count);
+    final cream = ItemKey('fløde', Dimension.volume);
+    final eggs = ItemKey('æg', Dimension.count);
 
     test('accepts a matching dimension', () {
       expect(parsePackSize('2,5 dl', cream)!.baseAmount, 250);

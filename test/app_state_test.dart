@@ -23,19 +23,16 @@ void main() {
       ..saveRecipe(omelet)
       ..addToPlan(omelet.id)
       ..addPantry(parseIngredient('2 æg')!)
-      ..setPackSize((
-        name: 'mælk',
-        dimension: Dimension.volume,
-      ), parseIngredient('1 l mælk'));
+      ..setPackSize(
+        ItemKey('mælk', Dimension.volume),
+        parseIngredient('1 l mælk'),
+      );
 
     final reloaded = AppState.load(prefs);
     expect(reloaded.planRecipes.single.name, 'Omelet');
     expect(reloaded.pantry.single.name, 'æg');
     expect(reloaded.shopping.map((item) => item.key.name), ['mælk', 'æg']);
-    expect(
-      reloaded.leftovers[(name: 'mælk', dimension: Dimension.volume)],
-      900,
-    );
+    expect(reloaded.leftovers[ItemKey('mælk', Dimension.volume)], 900);
   });
 
   test('deleting a recipe removes it from the plan', () async {
@@ -48,7 +45,7 @@ void main() {
   });
 
   test('toggleChecked flips and clearPlan resets', () async {
-    const eggs = (name: 'æg', dimension: Dimension.count);
+    final eggs = ItemKey('æg', Dimension.count);
     final state = AppState.load(await freshPrefs())..toggleChecked(eggs);
     expect(state.isChecked(eggs), isTrue);
     state.clearPlan();

@@ -9,15 +9,25 @@ Recipe recipe(String name, String ingredients) =>
 
 Stock stock(String text) => toStock(parseIngredients(text));
 
-const cream = (name: 'fløde', dimension: Dimension.volume);
-const pasta = (name: 'pasta', dimension: Dimension.mass);
-const eggs = (name: 'æg', dimension: Dimension.count);
+final cream = ItemKey('fløde', Dimension.volume);
+final pasta = ItemKey('pasta', Dimension.mass);
+final eggs = ItemKey('æg', Dimension.count);
 
 void main() {
   test('toStock sums the same item across units', () {
     final result = stock('1 dl fløde\n50 ml fløde\n1 kg pasta\n200 g pasta');
     expect(result[cream], 150);
     expect(result[pasta], 1200);
+  });
+
+  test('singular and plural names count as the same item', () {
+    final items = shoppingList(
+      needs: stock('500 g gulerødder\n2 tomater'),
+      pantry: stock('200 g gulerod\n2 tomat'),
+      packSizes: const {},
+    );
+    expect(items.single.key.name, 'gulerødder');
+    expect(items.single.missing, 300);
   });
 
   test('subtract keeps only positive remainders', () {
