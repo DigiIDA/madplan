@@ -2,7 +2,7 @@
 
 En enkel Android-app til opskrifter, madplan og indkøb. Alt gemmes lokalt på telefonen.
 
-- **Opskrifter**: skriv ingredienser som `100 g gulerødder`, `2 dl mælk`, `3 æg` (én pr. linje), og hvor mange personer opskriften er til.
+- **Opskrifter**: skriv ingredienser som `100 g gulerødder`, `2 dl mælk`, `3 æg` (én pr. linje), og hvor mange personer opskriften er til. Tryk på scan-ikonet for at **scanne en opskrift** fra en kogebog (kamera eller galleri) – teksten læses offline og fylder felterne ud, så du kan rette dem. Scan igen for at tilføje en side mere.
 - **Madplan**: læg en ret på for hver dag og vælg antal personer – mængderne skaleres automatisk. Appen viser, hvad der er **til overs**, og foreslår retter til resterne.
 - **Køleskab**: skriv, hvad du har derhjemme. Appen foreslår retter og viser, hvad du skal **supplere med**.
 - **Indkøb**: indkøbslisten laves ud fra madplanen minus det, du har. Angiv en pakningsstørrelse (fx `2,5 dl`), så runder listen op til hele pakker, og overskuddet tæller med i resterne. Kryds varer af, når du har købt dem, og tryk **Læg i køleskabet**.
@@ -59,6 +59,7 @@ GitHub Actions:
 |---|---|---|
 | `CI` | push/PR | `dart format` check, `flutter analyze`, `flutter test` |
 | `Tidy` | manuelt | `flutter create` (manglende platformfiler) + `dart format`, committer resultatet |
+| `Scan smoke test` | manuelt | bygger release-APK, scanner `test/fixtures/cookbook_page.png` i en emulator og tjekker at felterne udfyldes |
 | `Release APK` | tag `v*` | tester, bygger signeret APK og lægger den på en GitHub Release |
 
 Ny version: `git tag v0.2.0 && git push origin v0.2.0`.
