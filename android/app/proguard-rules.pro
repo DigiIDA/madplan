@@ -14,3 +14,7 @@
 -dontwarn com.google.mlkit.vision.text.devanagari.**
 -dontwarn com.google.mlkit.vision.text.japanese.**
 -dontwarn com.google.mlkit.vision.text.korean.**
+
+# ML Kit creates its component registrars by reflection from manifest
+# metadata; R8 full mode drops their no-arg constructors without this.
+-keep class com.google.mlkit.**.*Registrar { <init>(); }

@@ -54,7 +54,7 @@ tap "Ny opskrift"
 tap "Scan opskrift"
 tap "Vælg fra galleri"
 shot picker
-tap "cookbook_page" || tap "Billede" || tap "Photo"
+tap "Photo taken" || tap "cookbook_page"
 sleep 15
 shot scanned
 
