@@ -4,6 +4,10 @@ name: Smoke test APK on emulator
 # emulator. Fails if the app throws during startup.
 on:
   workflow_dispatch:
+    inputs:
+      api-level:
+        description: "Android API level for the emulator"
+        default: "34"
   workflow_call:
 
 jobs:
@@ -41,7 +45,7 @@ jobs:
       - name: Install, launch and capture
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 34
+          api-level: ${{ inputs.api-level || '34' }}
           arch: x86_64
           target: google_apis
           script: |
@@ -69,7 +73,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: smoke-result
+          name: smoke-result-${{ inputs.api-level || '34' }}
           path: |
             screen.png
             pantry-after-restart.png
