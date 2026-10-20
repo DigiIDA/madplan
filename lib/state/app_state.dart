@@ -77,8 +77,11 @@ class AppState extends ChangeNotifier {
     packSizes: packSizes,
   );
 
-  Stock get leftovers =>
-      computeLeftovers(needs: needs, pantry: toStock(_pantry), shopping: shopping);
+  Stock get leftovers => computeLeftovers(
+    needs: needs,
+    pantry: toStock(_pantry),
+    shopping: shopping,
+  );
 
   bool isChecked(ItemKey key) => _checked.contains(_checkKey(key));
 

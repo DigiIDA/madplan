@@ -4,11 +4,8 @@ import 'package:madplan/domain/parse.dart';
 import 'package:madplan/domain/planning.dart';
 import 'package:madplan/domain/quantity.dart';
 
-Recipe recipe(String name, String ingredients) => Recipe(
-  id: name,
-  name: name,
-  ingredients: parseIngredients(ingredients),
-);
+Recipe recipe(String name, String ingredients) =>
+    Recipe(id: name, name: name, ingredients: parseIngredients(ingredients));
 
 Stock stock(String text) => toStock(parseIngredients(text));
 

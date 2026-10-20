@@ -75,9 +75,7 @@ class SuggestionCard extends StatelessWidget {
                 Chip(
                   backgroundColor: Palette.sun,
                   side: BorderSide.none,
-                  label: Text(
-                    '${(suggestion.coverage * _percent).round()} %',
-                  ),
+                  label: Text('${(suggestion.coverage * _percent).round()} %'),
                 ),
               ],
             ),

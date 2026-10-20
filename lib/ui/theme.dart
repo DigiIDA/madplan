@@ -94,8 +94,7 @@ ThemeData buildTheme() {
     ),
     checkboxTheme: CheckboxThemeData(
       fillColor: WidgetStateProperty.resolveWith(
-        (states) =>
-            states.contains(WidgetState.selected) ? Palette.teal : null,
+        (states) => states.contains(WidgetState.selected) ? Palette.teal : null,
       ),
     ),
   );

@@ -14,9 +14,9 @@ class PlanScreen extends StatelessWidget {
   Future<void> _pickRecipe(BuildContext context) async {
     final recipes = state.recipes;
     if (recipes.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Opret først en opskrift')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Opret først en opskrift')));
       return;
     }
     final id = await showModalBottomSheet<String>(

@@ -51,15 +51,14 @@ List<ShoppingItem> shoppingList({
   required Stock needs,
   required Stock pantry,
   required Stock packSizes,
-}) =>
-    [
-      for (final entry in subtract(needs, pantry).entries)
-        ShoppingItem(
-          key: entry.key,
-          missing: entry.value,
-          packSize: packSizes[entry.key],
-        ),
-    ]..sort((a, b) => a.key.name.compareTo(b.key.name));
+}) => [
+  for (final entry in subtract(needs, pantry).entries)
+    ShoppingItem(
+      key: entry.key,
+      missing: entry.value,
+      packSize: packSizes[entry.key],
+    ),
+]..sort((a, b) => a.key.name.compareTo(b.key.name));
 
 Stock purchased(Iterable<ShoppingItem> items) => {
   for (final item in items) item.key: item.toBuy,

@@ -23,10 +23,10 @@ void main() {
       ..saveRecipe(omelet)
       ..addToPlan(omelet.id)
       ..addPantry(parseIngredient('2 æg')!)
-      ..setPackSize(
-        (name: 'mælk', dimension: Dimension.volume),
-        parseIngredient('1 l mælk'),
-      );
+      ..setPackSize((
+        name: 'mælk',
+        dimension: Dimension.volume,
+      ), parseIngredient('1 l mælk'));
 
     final reloaded = AppState.load(prefs);
     expect(reloaded.planRecipes.single.name, 'Omelet');
