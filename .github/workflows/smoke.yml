@@ -50,6 +50,20 @@ jobs:
             adb shell monkey -p dk.digiida.madplan -c android.intent.category.LAUNCHER 1
             sleep 30
             adb exec-out screencap -p > screen.png
+            adb shell input tap 200 600
+            sleep 3
+            adb shell input tap 150 160
+            sleep 2
+            adb shell input text "500%sg%spasta"
+            adb shell input keyevent 66
+            sleep 3
+            adb shell am force-stop dk.digiida.madplan
+            adb shell monkey -p dk.digiida.madplan -c android.intent.category.LAUNCHER 1
+            sleep 15
+            adb shell input tap 200 600
+            sleep 3
+            adb exec-out screencap -p > pantry-after-restart.png
+            adb exec-out uiautomator dump /dev/tty > ui.xml || true
             adb logcat -d > logcat.txt
             ! grep -E "E flutter|FATAL EXCEPTION" logcat.txt
       - uses: actions/upload-artifact@v4
@@ -58,4 +72,5 @@ jobs:
           name: smoke-result
           path: |
             screen.png
+            pantry-after-restart.png
             logcat.txt
