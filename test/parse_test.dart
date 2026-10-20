@@ -37,6 +37,24 @@ void main() {
       expect(item.name, 'salt');
     });
 
+    test('understands cookbook fractions and ranges', () {
+      final cases = {
+        '½ dl fløde': 0.5,
+        '1 ½ spsk olie': 1.5,
+        '1½ tsk salt': 1.5,
+        '1/2 l mælk': 0.5,
+        '1 1/2 kg kartofler': 1.5,
+        '¾ tsk spidskommen': 0.75,
+        '2-3 fed hvidløg': 2,
+        '2 – 3 gulerødder': 2,
+      };
+      cases.forEach((line, amount) {
+        expect(parseIngredient(line)!.amount, amount, reason: line);
+      });
+      expect(parseIngredient('1/2 l mælk')!.unit, Unit.l);
+      expect(parseIngredient('2-3 fed hvidløg')!.name, 'fed hvidløg');
+    });
+
     test('ignores empty lines and lone numbers', () {
       expect(parseIngredient('   '), isNull);
       expect(parseIngredient('2'), isNull);

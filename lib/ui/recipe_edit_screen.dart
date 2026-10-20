@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../domain/format.dart';
 import '../domain/models.dart';
 import '../domain/parse.dart';
+import '../domain/scan.dart';
 import '../state/app_state.dart';
+import 'scan_button.dart';
 import 'theme.dart';
 import 'widgets.dart';
 
@@ -36,6 +38,18 @@ class _RecipeEditScreenState extends State<RecipeEditScreen> {
     _ingredients.dispose();
     _instructions.dispose();
     super.dispose();
+  }
+
+  void _applyScan(ScannedRecipe scanned) {
+    setState(() {
+      if (_name.text.trim().isEmpty) _name.text = scanned.name ?? '';
+      _servings = scanned.servings ?? _servings;
+      _ingredients.text = appendText(
+        _ingredients.text,
+        scanned.ingredientLines.join('\n'),
+      );
+      _instructions.text = appendText(_instructions.text, scanned.instructions);
+    });
   }
 
   void _save() {
@@ -92,6 +106,7 @@ class _RecipeEditScreenState extends State<RecipeEditScreen> {
       appBar: AppBar(
         title: Text(recipe == null ? 'Ny opskrift' : 'Rediger'),
         actions: [
+          ScanRecipeButton(onScanned: _applyScan),
           if (recipe != null)
             IconButton(
               tooltip: 'Slet opskrift',
