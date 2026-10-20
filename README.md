@@ -10,9 +10,38 @@ En enkel Android-app til opskrifter, madplan og indkøb. Alt gemmes lokalt på t
 
 ## Installation via Obtainium
 
-1. Åbn Obtainium og vælg **Add App**.
-2. Indsæt `https://github.com/DigiIDA/madplan` og tryk **Add**.
-3. Installer. Obtainium henter nye versioner fra GitHub Releases.
+Appen ligger ikke i Google Play. Den installeres og opdateres med [Obtainium](https://github.com/ImranR98/Obtainium), som henter APK-filen direkte fra dette repos [Releases](https://github.com/DigiIDA/madplan/releases). Kræver Android 7 eller nyere.
+
+### 1. Installér Obtainium (kun første gang)
+
+1. Åbn [Obtainiums releases](https://github.com/ImranR98/Obtainium/releases) på telefonen.
+2. Hent den nyeste APK under **Assets**. Er du i tvivl om hvilken, så vælg den, der ender på `-arm64-v8a-release.apk` (passer til næsten alle nyere telefoner).
+3. Åbn filen. Android spørger, om browseren må installere ukendte apps – tillad det, gå tilbage og tryk **Installer**.
+
+### 2. Tilføj Madplan
+
+1. Åbn Obtainium og gå til fanen **Add App**.
+2. Indsæt i feltet **App Source URL**:
+   ```
+   https://github.com/DigiIDA/madplan
+   ```
+3. Tryk **Add**. Obtainium finder den nyeste version.
+4. Tryk **Install**. Første gang skal Obtainium have lov til at installere apps – tillad det og tryk **Install** igen.
+
+Madplan ligger nu på hjemmeskærmen med solnedgangs-nudel-ikonet.
+
+### 3. Opdateringer
+
+Obtainium tjekker selv for nye versioner i baggrunden. Når der er en opdatering, står den under fanen **Apps** – tryk **Update**. Du kan også trække ned på listen for at tjekke med det samme. Dine opskrifter, madplan og køleskab bevares ved opdatering.
+
+### Hvis noget driller
+
+| Problem | Løsning |
+|---|---|
+| **Play Protect** advarer om en ukendt app | Tryk **Flere detaljer** → **Installer alligevel**. Appen er bygget og signeret af GitHub Actions fra koden i dette repo. |
+| Obtainium finder ingen APK | Tjek at URL'en er præcis `https://github.com/DigiIDA/madplan` (uden `/releases`). |
+| Opdatering fejler med "signatur"-fejl | Lav en backup af opskrifterne (⋮ → **Gem backup**), afinstallér Madplan, installér igen og hent backuppen. |
+| GitHub-grænse ("rate limit") | Vent en time, eller tilføj et GitHub-token under Obtainiums **Settings**. |
 
 ## Udvikling
 
