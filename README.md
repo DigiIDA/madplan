@@ -15,7 +15,15 @@ En enkel Android-app til opskrifter, madplan og indkøb. Alt gemmes lokalt på t
 
 ## Udvikling
 
-Der er ingen lokal Flutter. Alt kører i GitHub Actions:
+Flutter 3.47.7 er installeret lokalt i `C:\Users\idaj\flutter` (kun SDK, APK bygges i CI). Kør før hver commit:
+
+```bash
+dart format .
+flutter analyze
+flutter test
+```
+
+GitHub Actions:
 
 | Workflow | Hvornår | Hvad |
 |---|---|---|
