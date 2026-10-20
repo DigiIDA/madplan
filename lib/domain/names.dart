@@ -1,6 +1,19 @@
 const _minStemLength = 3;
 const _irregularEndings = {'rødderne': 'rod', 'rødder': 'rod'};
 const _pluralSuffixes = ['erne', 'ene', 'er', 'e', 'r'];
+const _descriptiveWords = {
+  'stor',
+  'store',
+  'lille',
+  'små',
+  'mellemstor',
+  'mellemstore',
+  'frisk',
+  'friske',
+  'økologisk',
+  'økologiske',
+  'øko',
+};
 
 final _doubleLetters = RegExp(r'(.)\1+');
 
@@ -30,4 +43,8 @@ String _stem(String word) => _contractEl(
   _stripPlural(_replaceIrregular(word)),
 ).replaceAllMapped(_doubleLetters, (match) => match.group(1)!);
 
-String matchKey(String name) => name.split(' ').map(_stem).join(' ');
+String matchKey(String name) {
+  final words = name.split(' ');
+  final significant = words.where((word) => !_descriptiveWords.contains(word));
+  return (significant.isEmpty ? words : significant).map(_stem).join(' ');
+}
