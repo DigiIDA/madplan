@@ -1,0 +1,32 @@
+name: Tidy (scaffold + format)
+
+# No local Flutter SDK: run this to generate missing platform files
+# and apply `dart format`, then commit the result back.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  tidy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.47.7"
+          cache: true
+      - name: Scaffold missing Android files
+        run: flutter create --platforms=android --org dk.digiida --project-name madplan .
+      - name: Format
+        run: dart format .
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "chore: scaffold and format"
+          git push
+      - run: flutter analyze
+      - run: flutter test
