@@ -33,7 +33,13 @@ tap() {
   return 1
 }
 
-adb push test/fixtures/cookbook_page.png /sdcard/Pictures/cookbook_page.png
+for _ in $(seq 1 30); do
+  adb shell mkdir -p /sdcard/Pictures \
+    && adb push test/fixtures/cookbook_page.png /sdcard/Pictures/cookbook_page.png \
+    && break
+  sleep 5
+done
+adb shell ls /sdcard/Pictures/cookbook_page.png
 adb shell content call --method scan_volume --uri content://media --arg external_primary || true
 adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE \
   -d file:///sdcard/Pictures/cookbook_page.png || true
